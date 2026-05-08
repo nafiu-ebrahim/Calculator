@@ -263,12 +263,12 @@ MADE BY NAFIU
 <div class="main-label">2nd</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('mode')">
+<button class="btn dark-btn" onclick="toggleAngle()">
 <div class="top-label">quit</div>
 <div class="main-label">mode</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('delete')">
+<button class="btn dark-btn" onclick="backspace()">
 <div class="top-label">insert</div>
 <div class="main-label">delete</div>
 </button>
@@ -326,12 +326,12 @@ MADE BY NAFIU
 <div class="main-label">÷</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('**')">
+<button class="btn dark-btn" onclick="appendValue('^')">
 <div class="top-label">xʸ</div>
 <div class="main-label">^</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('1/')">
+<button class="btn dark-btn" onclick="appendValue('1/(')">
 <div class="main-label">x⁻¹</div>
 </button>
 
@@ -446,127 +446,152 @@ TI‑30XS MultiView GED Scientific Calculator • Fully Mobile Responsive • Mo
 </div>
 
 <script>
-let expression='';
-let powered=true;
-let angleMode='RAD';
+const display = document.getElementById('display');
+const result = document.getElementById('result');
+const rad = document.querySelector('.rad');
 
-const display=document.getElementById('display');
-const result=document.getElementById('result');
-const rad=document.querySelector('.rad');
+let input = '';
+let angleMode = 'RAD';
+let isOn = true;
 
-function render(){
-display.textContent=expression || '0';
+function renderDisplay(){
+    display.innerText = input || '0';
 }
 
-function appendValue(value){
-if(!powered)return;
+function appendValue(val){
+    if(!isOn) return;
 
-if(display.textContent==='MEMORY CLEARED'||display.textContent==='READY'){
-expression='';
-}
+    if(display.innerText === 'READY'){
+        input = '';
+    }
 
-expression+=value;
-render();
+    input += val;
+    renderDisplay();
 }
 
 function clearDisplay(){
-if(!powered)return;
-expression='';
-render();
-result.textContent='0';
+    if(!isOn) return;
+
+    input = '';
+    display.innerText = '0';
+    result.innerText = '0';
 }
 
 function backspace(){
-if(!powered)return;
-expression=expression.slice(0,-1);
-render();
+    if(!isOn) return;
+
+    input = input.substring(0, input.length - 1);
+    renderDisplay();
 }
 
 function toggleAngle(){
-if(!powered)return;
-angleMode=angleMode==='RAD'?'DEG':'RAD';
-rad.textContent=angleMode;
-}
-
-function formatExpression(exp){
-exp=exp.replace(/÷/g,'/');
-exp=exp.replace(/×/g,'*');
-exp=exp.replace(/π/g,'Math.PI');
-exp=exp.replace(/sqrt\(/g,'Math.sqrt(');
-exp=exp.replace(/log\(/g,'Math.log10(');
-
-if(angleMode==='DEG'){
-exp=exp.replace(/sin\(([^()]*)\)/g,'Math.sin(($1)*Math.PI/180)');
-exp=exp.replace(/cos\(([^()]*)\)/g,'Math.cos(($1)*Math.PI/180)');
-exp=exp.replace(/tan\(([^()]*)\)/g,'Math.tan(($1)*Math.PI/180)');
-}else{
-exp=exp.replace(/sin\(([^()]*)\)/g,'Math.sin($1)');
-exp=exp.replace(/cos\(([^()]*)\)/g,'Math.cos($1)');
-exp=exp.replace(/tan\(([^()]*)\)/g,'Math.tan($1)');
-}
-
-return exp;
-}
-
-function calculateResult(){
-if(!powered)return;
-
-try{
-const formatted=formatExpression(expression);
-const answer=eval(formatted);
-
-if(isNaN(answer)||!isFinite(answer)){
-result.textContent='ERROR';
-return;
-}
-
-result.textContent=parseFloat(answer.toFixed(10));
-}
-catch(error){
-result.textContent='ERROR';
-}
+    angleMode = angleMode === 'RAD' ? 'DEG' : 'RAD';
+    rad.innerText = angleMode;
 }
 
 function powerToggle(){
-powered=!powered;
+    isOn = !isOn;
 
-if(powered){
-display.textContent='READY';
-result.textContent='0';
-}else{
-display.textContent='';
-result.textContent='';
-}
-}
-
-document.addEventListener('keydown',e=>{
-if(!powered)return;
-
-if(/[0-9+\-*/().]/.test(e.key)){
-expression+=e.key;
-render();
+    if(isOn){
+        display.innerText = 'READY';
+        result.innerText = '0';
+    }else{
+        display.innerText = '';
+        result.innerText = '';
+    }
 }
 
-if(e.key==='Enter') calculateResult();
-if(e.key==='Backspace') backspace();
-if(e.key==='Escape') clearDisplay();
-});
+function prepareExpression(exp){
 
-const buttons=document.querySelectorAll('.btn');
+    exp = exp.replace(/÷/g, '/');
+    exp = exp.replace(/×/g, '*');
+    exp = exp.replace(/π/g, 'Math.PI');
+    exp = exp.replace(/\^/g, '**');
+
+    exp = exp.replace(/sqrt\(/g, 'Math.sqrt(');
+    exp = exp.replace(/log\(/g, 'Math.log10(');
+    exp = exp.replace(/ln\(/g, 'Math.log(');
+
+    if(angleMode === 'DEG'){
+        exp = exp.replace(/sin\(([^()]*)\)/g, 'Math.sin(($1)*Math.PI/180)');
+        exp = exp.replace(/cos\(([^()]*)\)/g, 'Math.cos(($1)*Math.PI/180)');
+        exp = exp.replace(/tan\(([^()]*)\)/g, 'Math.tan(($1)*Math.PI/180)');
+    }else{
+        exp = exp.replace(/sin\(([^()]*)\)/g, 'Math.sin($1)');
+        exp = exp.replace(/cos\(([^()]*)\)/g, 'Math.cos($1)');
+        exp = exp.replace(/tan\(([^()]*)\)/g, 'Math.tan($1)');
+    }
+
+    return exp;
+}
+
+function calculateResult(){
+    if(!isOn) return;
+
+    try{
+        const finalExp = prepareExpression(input);
+        const answer = eval(finalExp);
+
+        if(isNaN(answer) || !isFinite(answer)){
+            result.innerText = 'ERROR';
+            return;
+        }
+
+        result.innerText = Number(answer.toFixed(10));
+    }
+    catch(e){
+        result.innerText = 'ERROR';
+    }
+}
+
+const buttons = document.querySelectorAll('.btn');
 
 buttons.forEach(btn=>{
-btn.addEventListener('touchstart',()=>{
-btn.style.transform='scale(.93)';
-},{passive:true});
+    btn.addEventListener('touchstart',()=>{
+        btn.style.transform = 'scale(0.95)';
+    },{passive:true});
 
-btn.addEventListener('touchend',()=>{
-btn.style.transform='scale(1)';
-},{passive:true});
+    btn.addEventListener('touchend',()=>{
+        btn.style.transform = 'scale(1)';
+    },{passive:true});
+
+    btn.addEventListener('mousedown',()=>{
+        btn.style.transform = 'scale(0.95)';
+    });
+
+    btn.addEventListener('mouseup',()=>{
+        btn.style.transform = 'scale(1)';
+    });
+});
+
+document.addEventListener('keydown', function(e){
+
+    if(!isOn) return;
+
+    if(/[0-9]/.test(e.key)){
+        appendValue(e.key);
+    }
+
+    if(['+','-','*','/','.','(',')'].includes(e.key)){
+        appendValue(e.key);
+    }
+
+    if(e.key === 'Enter'){
+        calculateResult();
+    }
+
+    if(e.key === 'Backspace'){
+        backspace();
+    }
+
+    if(e.key === 'Escape'){
+        clearDisplay();
+    }
 });
 
 setTimeout(()=>{
-display.textContent='READY';
-},1000);
+    display.innerText = 'READY';
+}, 600);
 </script>
 
 </body>
