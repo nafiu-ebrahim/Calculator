@@ -529,17 +529,38 @@ function calculateResult(){
     if(!isOn) return;
 
     try{
-        const finalExp = prepareExpression(input);
-        const answer = eval(finalExp);
+        let exp = input;
+
+        exp = exp.replace(/÷/g,'/');
+        exp = exp.replace(/×/g,'*');
+        exp = exp.replace(/π/g,'Math.PI');
+        exp = exp.replace(/\^/g,'**');
+
+        exp = exp.replace(/sqrt\(/g,'Math.sqrt(');
+        exp = exp.replace(/log\(/g,'Math.log10(');
+        exp = exp.replace(/ln\(/g,'Math.log(');
+
+        if(angleMode === 'DEG'){
+            exp = exp.replace(/sin\((.*?)\)/g,(m,v)=>`Math.sin((${v})*Math.PI/180)`);
+            exp = exp.replace(/cos\((.*?)\)/g,(m,v)=>`Math.cos((${v})*Math.PI/180)`);
+            exp = exp.replace(/tan\((.*?)\)/g,(m,v)=>`Math.tan((${v})*Math.PI/180)`);
+        } else {
+            exp = exp.replace(/sin\((.*?)\)/g,(m,v)=>`Math.sin(${v})`);
+            exp = exp.replace(/cos\((.*?)\)/g,(m,v)=>`Math.cos(${v})`);
+            exp = exp.replace(/tan\((.*?)\)/g,(m,v)=>`Math.tan(${v})`);
+        }
+
+        const answer = Function('return ' + exp)();
 
         if(isNaN(answer) || !isFinite(answer)){
             result.innerText = 'ERROR';
             return;
         }
 
-        result.innerText = Number(answer.toFixed(10));
+        result.innerText = parseFloat(answer.toFixed(10));
     }
-    catch(e){
+    catch(err){
+        console.log(err);
         result.innerText = 'ERROR';
     }
 }
