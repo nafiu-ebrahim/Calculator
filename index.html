@@ -1,955 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TI-30XS Multiview GED Calculator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TI-30XS MultiView GED Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+body{
+background:#06080f;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+overflow-x:hidden;
+}
 
-        body {
-            background: linear-gradient(135deg, #0f172a, #111827, #020617);
-            min-height: 100vh;
-            overflow-x: hidden;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            position: relative;
-        }
+.bg-glow{
+position:fixed;
+width:500px;
+height:500px;
+background:rgba(59,130,246,0.18);
+filter:blur(120px);
+border-radius:50%;
+left:-150px;
+top:-150px;
+}
 
-        body::before {
-            content: "";
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.15);
-            filter: blur(120px);
-            top: -200px;
-            left: -200px;
-        }
+.bg-glow2{
+position:fixed;
+width:450px;
+height:450px;
+background:rgba(168,85,247,0.18);
+filter:blur(120px);
+border-radius:50%;
+right:-120px;
+bottom:-120px;
+}
 
-        body::after {
-            content: "";
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            background: rgba(168, 85, 247, 0.15);
-            filter: blur(120px);
-            bottom: -200px;
-            right: -200px;
-        }
+.phone-wrapper{
+width:100%;
+max-width:430px;
+position:relative;
+z-index:10;
+}
 
-        .main-wrapper {
-            width: 100%;
-            max-width: 1300px;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 40px;
-            z-index: 2;
-        }
+.made-by{
+text-align:center;
+margin-bottom:14px;
+color:white;
+font-size:13px;
+font-weight:800;
+letter-spacing:4px;
+padding:12px 20px;
+border-radius:999px;
+background:linear-gradient(90deg,#2563eb,#7c3aed);
+box-shadow:0 10px 30px rgba(59,130,246,0.35);
+}
 
-        .hero-panel {
-            padding: 50px;
-            border-radius: 35px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.45);
-        }
+.calculator-shell{
+background:#4b555e;
+border-radius:34px;
+padding:18px;
+box-shadow:0 25px 80px rgba(0,0,0,0.6);
+border:3px solid #69727b;
+}
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(59,130,246,0.15);
-            border: 1px solid rgba(96,165,250,0.3);
-            color: #93c5fd;
-            padding: 12px 18px;
-            border-radius: 999px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 30px;
-        }
+.top-brand{
+display:flex;
+justify-content:flex-end;
+padding:10px 10px 14px;
+}
 
-        .badge span {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #3b82f6;
-            box-shadow: 0 0 15px #3b82f6;
-        }
+.brand-text{
+text-align:right;
+color:white;
+}
 
-        h1 {
-            font-size: 64px;
-            line-height: 1.1;
-            margin-bottom: 25px;
-            font-weight: 800;
-            letter-spacing: -2px;
-        }
+.brand-text h1{
+font-size:48px;
+font-weight:800;
+line-height:0.9;
+}
 
-        .gradient {
-            background: linear-gradient(90deg, #60a5fa, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.brand-text h2{
+font-size:20px;
+font-style:italic;
+font-weight:400;
+letter-spacing:4px;
+}
 
-        .description {
-            color: #cbd5e1;
-            font-size: 18px;
-            line-height: 1.8;
-            margin-bottom: 40px;
-            max-width: 700px;
-        }
+.screen{
+background:#ececec;
+height:170px;
+border-radius:2px;
+padding:20px;
+margin-bottom:18px;
+position:relative;
+overflow:hidden;
+box-shadow:inset 0 0 10px rgba(0,0,0,0.2);
+}
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 45px;
-        }
+.rad{
+position:absolute;
+right:15px;
+top:10px;
+font-size:18px;
+font-weight:700;
+color:#111;
+}
 
-        .stat-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 25px;
-            padding: 25px;
-            transition: 0.3s ease;
-        }
+.display-text{
+font-size:42px;
+font-weight:500;
+color:#111;
+margin-top:40px;
+word-break:break-all;
+font-family:monospace;
+}
 
-        .stat-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(96,165,250,0.5);
-        }
+.result{
+position:absolute;
+bottom:18px;
+right:18px;
+font-size:26px;
+font-weight:700;
+color:#111;
+font-family:monospace;
+}
 
-        .stat-card h2 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
+.keypad{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+}
 
-        .stat-card p {
-            color: #94a3b8;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+.btn{
+height:72px;
+border:none;
+border-radius:14px;
+font-size:18px;
+font-weight:700;
+position:relative;
+cursor:pointer;
+transition:0.18s ease;
+overflow:hidden;
+}
 
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
+.btn:active{
+transform:scale(0.94);
+}
 
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 20px;
-            border-radius: 22px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+.dark-btn{
+background:#2f3641;
+color:white;
+border:3px solid #5f6872;
+}
 
-        .feature-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            font-size: 20px;
-            font-weight: 700;
-        }
+.white-btn{
+background:#ececec;
+color:#333;
+border:3px solid #d5d5d5;
+}
 
-        .feature-content h3 {
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
+.green-btn{
+background:#a6c56a;
+color:#2f3641;
+border:3px solid #c8e48d;
+}
 
-        .feature-content p {
-            font-size: 13px;
-            color: #94a3b8;
-            line-height: 1.5;
-        }
+.operator-btn{
+background:#2d3340;
+color:white;
+border:3px solid #59616d;
+}
 
-        .calculator-wrapper {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 40px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.45);
-            backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-        }
+.top-label{
+position:absolute;
+top:6px;
+left:0;
+right:0;
+font-size:12px;
+font-weight:800;
+color:#d9f57b;
+}
 
-        .calculator-wrapper::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent);
-            pointer-events: none;
-        }
+.main-label{
+position:absolute;
+bottom:12px;
+left:0;
+right:0;
+font-size:17px;
+}
 
-        .made-by {
-            width: fit-content;
-            margin: 0 auto 20px;
-            padding: 10px 22px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #2563eb, #7c3aed);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            box-shadow: 0 10px 25px rgba(59,130,246,0.4);
-        }
+.enter-btn{
+grid-column:span 1;
+height:72px;
+}
 
-        .calculator-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+.arrow-pad{
+grid-column:span 2;
+height:72px;
+border-radius:40px;
+background:#2f3641;
+border:3px solid #5f6872;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:22px;
+color:white;
+font-size:26px;
+}
 
-        .calculator-brand h2 {
-            font-size: 26px;
-            margin-bottom: 4px;
-        }
+.footer-note{
+text-align:center;
+margin-top:18px;
+color:#94a3b8;
+font-size:13px;
+line-height:1.6;
+}
 
-        .calculator-brand p {
-            font-size: 13px;
-            color: #94a3b8;
-        }
+@media(max-width:480px){
+body{
+padding:10px;
+}
 
-        .power-light {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 15px #22c55e;
-        }
+.calculator-shell{
+padding:12px;
+border-radius:26px;
+}
 
-        .screen {
-            background: linear-gradient(180deg, #d1fae5, #a7f3d0);
-            border-radius: 24px;
-            padding: 25px;
-            min-height: 140px;
-            margin-bottom: 25px;
-            box-shadow: inset 0 4px 15px rgba(0,0,0,0.18);
-            color: #064e3b;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+.brand-text h1{
+font-size:38px;
+}
 
-        .screen-top {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            font-weight: 700;
-        }
+.brand-text h2{
+font-size:16px;
+}
 
-        .expression {
-            font-size: 20px;
-            margin-top: 12px;
-            min-height: 30px;
-            word-break: break-all;
-        }
+.screen{
+height:145px;
+}
 
-        .result {
-            text-align: right;
-            font-size: 42px;
-            font-weight: 700;
-            margin-top: 15px;
-        }
+.display-text{
+font-size:28px;
+margin-top:35px;
+}
 
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 14px;
-        }
+.result{
+font-size:20px;
+}
 
-        .btn {
-            height: 68px;
-            border: none;
-            border-radius: 20px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.25s ease;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
+.btn{
+height:62px;
+}
 
-        .btn::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent);
-            pointer-events: none;
-        }
+.main-label{
+font-size:14px;
+}
 
-        .btn:hover {
-            transform: translateY(-4px);
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        .btn-dark {
-            background: linear-gradient(180deg, #1e293b, #0f172a);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .btn-blue {
-            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-            box-shadow: 0 8px 20px rgba(59,130,246,0.35);
-        }
-
-        .btn-purple {
-            background: linear-gradient(180deg, #8b5cf6, #6d28d9);
-            box-shadow: 0 8px 20px rgba(139,92,246,0.35);
-        }
-
-        .btn-green {
-            background: linear-gradient(180deg, #22c55e, #15803d);
-            box-shadow: 0 8px 20px rgba(34,197,94,0.35);
-        }
-
-        .btn-red {
-            background: linear-gradient(180deg, #ef4444, #b91c1c);
-            box-shadow: 0 8px 20px rgba(239,68,68,0.35);
-        }
-
-        .footer {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-card {
-            flex: 1;
-            min-width: 150px;
-            padding: 18px;
-            border-radius: 18px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .footer-card h4 {
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        .footer-card p {
-            color: #94a3b8;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .floating-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.08);
-            font-size: 12px;
-            color: #cbd5e1;
-        }
-
-        .glow {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: rgba(96,165,250,0.25);
-            filter: blur(90px);
-            top: 30%;
-            left: 30%;
-            pointer-events: none;
-        }
-
-        @media (max-width: 1100px) {
-            .main-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 48px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero-panel {
-                padding: 30px;
-            }
-
-            .calculator-wrapper {
-                padding: 20px;
-            }
-
-            .feature-list {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .button-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .btn {
-                height: 60px;
-            }
-
-            h1 {
-                font-size: 40px;
-            }
-        }
-    </style>
+.top-label{
+font-size:10px;
+}
+}
+</style>
 </head>
 <body>
 
-    <div class="glow"></div>
-
-    <div class="main-wrapper">
-
-        <div class="hero-panel">
-
-            <div class="badge">
-                <span></span>
-                TI-30XS MULTIVIEW GED EDITION
-            </div>
-
-            <h1>
-                Smart <span class="gradient">Scientific</span><br>
-                Calculator Experience
-            </h1>
-
-            <p class="description">
-                A modern and elegant TI-30XS MultiView inspired scientific calculator designed for GED students.
-                Fast calculations, beautiful interface, smooth animations, and advanced scientific functionality
-                packed into one clean responsive website.
-            </p>
-
-            <div class="stats-grid">
-
-                <div class="stat-card">
-                    <h2>99%</h2>
-                    <p>
-                        GED optimized scientific operations for algebra, geometry,
-                        fractions, and advanced calculations.
-                    </p>
-                </div>
-
-                <div class="stat-card">
-                    <h2>50+</h2>
-                    <p>
-                        Functions including logarithms, powers, trigonometry,
-                        roots, constants, and memory support.
-                    </p>
-                </div>
-
-                <div class="stat-card">
-                    <h2>24/7</h2>
-                    <p>
-                        Responsive modern calculator design that works smoothly
-                        across desktop, tablet, and mobile devices.
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="feature-list">
-
-                <div class="feature-item">
-                    <div class="feature-icon">ƒ</div>
-                    <div class="feature-content">
-                        <h3>Scientific Functions</h3>
-                        <p>Supports trigonometry, powers, roots, and logarithms.</p>
-                    </div>
-                </div>
-
-                <div class="feature-item">
-                    <div class="feature-icon">π</div>
-                    <div class="feature-content">
-                        <h3>Math Constants</h3>
-                        <p>Quick access to π and Euler's number for GED calculations.</p>
-                    </div>
-                </div>
-
-                <div class="feature-item">
-                    <div class="feature-icon">√</div>
-                    <div class="feature-content">
-                        <h3>Root Functions</h3>
-                        <p>Square root and advanced power operations included.</p>
-                    </div>
-                </div>
-
-                <div class="feature-item">
-                    <div class="feature-icon">∞</div>
-                    <div class="feature-content">
-                        <h3>Modern Design</h3>
-                        <p>Glassmorphism interface with smooth interactions.</p>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="calculator-wrapper">
-
-            <div class="floating-badge">
-                GED READY
-            </div>
-
-            <div class="made-by">
-                MADE BY NAFIU
-            </div>
-
-            <div class="calculator-top">
-
-                <div class="calculator-brand">
-                    <h2>TI-30XS MultiView</h2>
-                    <p>Scientific Calculator • Modern Web Edition</p>
-                </div>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<div class="phone-wrapper">
+
+<div class="made-by">
+MADE BY NAFIU
+</div>
+
+<div class="calculator-shell">
+
+<div class="top-brand">
+<div class="brand-text">
+<h1>TI-30XS</h1>
+<h2>MultiView</h2>
+</div>
+</div>
+
+<div class="screen">
+<div class="rad">RAD</div>
+<div class="display-text" id="display">MEMORY CLEARED</div>
+<div class="result" id="result">0</div>
+</div>
+
+<div class="keypad">
+
+<button class="btn green-btn" onclick="appendValue('2nd')">
+<div class="main-label">2nd</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('mode')">
+<div class="top-label">quit</div>
+<div class="main-label">mode</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('delete')">
+<div class="top-label">insert</div>
+<div class="main-label">delete</div>
+</button>
+
+<div class="arrow-pad">
+◀ ▲ ▼ ▶
+</div>
+
+<button class="btn dark-btn" onclick="appendValue('Math.log10(')">
+<div class="top-label">10ˣ</div>
+<div class="main-label">log</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('angle')">
+<div class="top-label">angle</div>
+<div class="main-label">prb</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('data')">
+<div class="top-label">stat</div>
+<div class="main-label">data</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('table')">
+<div class="top-label">f↔d</div>
+<div class="main-label">table</div>
+</button>
+
+<button class="btn dark-btn" onclick="clearDisplay()">
+<div class="main-label">clear</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('Math.PI')">
+<div class="top-label">hyp</div>
+<div class="main-label">π</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('Math.sin(')">
+<div class="top-label">sin⁻¹</div>
+<div class="main-label">sin</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('Math.cos(')">
+<div class="top-label">cos⁻¹</div>
+<div class="main-label">cos</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('Math.tan(')">
+<div class="top-label">tan⁻¹</div>
+<div class="main-label">tan</div>
+</button>
+
+<button class="btn operator-btn" onclick="appendValue('/')">
+<div class="top-label">k</div>
+<div class="main-label">÷</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('**')">
+<div class="top-label">xʸ</div>
+<div class="main-label">^</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('1/')">
+<div class="main-label">x⁻¹</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('(')">
+<div class="top-label">%</div>
+<div class="main-label">(</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue(')')">
+<div class="top-label">▶%</div>
+<div class="main-label">)</div>
+</button>
+
+<button class="btn operator-btn" onclick="appendValue('*')">
+<div class="main-label">×</div>
+</button>
 
-                <div class="power-light"></div>
+<button class="btn dark-btn" onclick="appendValue('Math.sqrt(')">
+<div class="top-label">√</div>
+<div class="main-label">x²</div>
+</button>
 
-            </div>
+<button class="btn white-btn" onclick="appendValue('7')">
+<div class="main-label">7</div>
+</button>
 
-            <div class="screen">
+<button class="btn white-btn" onclick="appendValue('8')">
+<div class="main-label">8</div>
+</button>
 
-                <div>
-                    <div class="screen-top">
-                        <span>DEG</span>
-                        <span>MULTIVIEW</span>
-                    </div>
+<button class="btn white-btn" onclick="appendValue('9')">
+<div class="main-label">9</div>
+</button>
 
-                    <div class="expression" id="expression">
-                        0
-                    </div>
-                </div>
+<button class="btn operator-btn" onclick="appendValue('-')">
+<div class="main-label">−</div>
+</button>
 
-                <div class="result" id="result">
-                    0
-                </div>
-
-            </div>
-
-            <div class="button-grid">
-
-                <button class="btn btn-red" onclick="clearDisplay()">AC</button>
-                <button class="btn btn-purple" onclick="appendValue('(')">(</button>
-                <button class="btn btn-purple" onclick="appendValue(')')">)</button>
-                <button class="btn btn-purple" onclick="appendValue('%')">%</button>
-                <button class="btn btn-blue" onclick="appendValue('/')">÷</button>
-
-                <button class="btn btn-dark" onclick="appendValue('7')">7</button>
-                <button class="btn btn-dark" onclick="appendValue('8')">8</button>
-                <button class="btn btn-dark" onclick="appendValue('9')">9</button>
-                <button class="btn btn-purple" onclick="appendValue('Math.sqrt(')">√</button>
-                <button class="btn btn-blue" onclick="appendValue('*')">×</button>
-
-                <button class="btn btn-dark" onclick="appendValue('4')">4</button>
-                <button class="btn btn-dark" onclick="appendValue('5')">5</button>
-                <button class="btn btn-dark" onclick="appendValue('6')">6</button>
-                <button class="btn btn-purple" onclick="appendValue('**')">xʸ</button>
-                <button class="btn btn-blue" onclick="appendValue('-')">−</button>
-
-                <button class="btn btn-dark" onclick="appendValue('1')">1</button>
-                <button class="btn btn-dark" onclick="appendValue('2')">2</button>
-                <button class="btn btn-dark" onclick="appendValue('3')">3</button>
-                <button class="btn btn-purple" onclick="appendValue('Math.PI')">π</button>
-                <button class="btn btn-blue" onclick="appendValue('+')">+</button>
-
-                <button class="btn btn-dark" onclick="appendValue('0')">0</button>
-                <button class="btn btn-dark" onclick="appendValue('.')">.</button>
-                <button class="btn btn-purple" onclick="appendValue('Math.sin(')">sin</button>
-                <button class="btn btn-purple" onclick="appendValue('Math.cos(')">cos</button>
-                <button class="btn btn-green" onclick="calculateResult()">=</button>
-
-                <button class="btn btn-dark" onclick="appendValue('Math.tan(')">tan</button>
-                <button class="btn btn-dark" onclick="appendValue('Math.log10(')">log</button>
-                <button class="btn btn-dark" onclick="appendValue('Math.log(')">ln</button>
-                <button class="btn btn-dark" onclick="appendValue('Math.E')">e</button>
-                <button class="btn btn-dark" onclick="backspace()">⌫</button>
-
-            </div>
-
-            <div class="footer">
-
-                <div class="footer-card">
-                    <h4>GED Optimized</h4>
-                    <p>
-                        Specially styled for students preparing for GED math exams.
-                    </p>
-                </div>
-
-                <div class="footer-card">
-                    <h4>Responsive Layout</h4>
-                    <p>
-                        Looks modern and smooth on all screen sizes and devices.
-                    </p>
-                </div>
-
-                <div class="footer-card">
-                    <h4>Scientific Engine</h4>
-                    <p>
-                        Includes scientific math support and instant calculations.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <script>
-
-        let expression = "";
-
-        const expressionDisplay = document.getElementById("expression");
-        const resultDisplay = document.getElementById("result");
-
-        function appendValue(value) {
-
-            if (expression === "0") {
-                expression = "";
-            }
-
-            expression += value;
-
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-
-            expressionDisplay.textContent = expression || "0";
-        }
-
-        function clearDisplay() {
-
-            expression = "";
-
-            expressionDisplay.textContent = "0";
-
-            resultDisplay.textContent = "0";
-        }
-
-        function backspace() {
-
-            expression = expression.slice(0, -1);
-
-            updateDisplay();
-        }
-
-        function calculateResult() {
-
-            try {
-
-                let result = eval(expression);
-
-                if (result === undefined || result === null || Number.isNaN(result)) {
-                    resultDisplay.textContent = "Error";
-                    return;
-                }
-
-                resultDisplay.textContent = result;
-
-            } catch (error) {
-
-                resultDisplay.textContent = "Error";
-            }
-        }
-
-        document.addEventListener("keydown", function(event) {
-
-            const key = event.key;
-
-            if (!isNaN(key) || ['+', '-', '*', '/', '.', '(', ')'].includes(key)) {
-
-                appendValue(key);
-            }
-
-            if (key === 'Enter') {
-
-                calculateResult();
-            }
-
-            if (key === 'Backspace') {
-
-                backspace();
-            }
-
-            if (key === 'Escape') {
-
-                clearDisplay();
-            }
-        });
-
-        const buttons = document.querySelectorAll('.btn');
-
-        buttons.forEach(button => {
-
-            button.addEventListener('mouseenter', () => {
-
-                button.style.transform = 'translateY(-4px) scale(1.02)';
-            });
-
-            button.addEventListener('mouseleave', () => {
-
-                button.style.transform = 'translateY(0px) scale(1)';
-            });
-        });
-
-        function bootAnimation() {
-
-            const startupMessages = [
-                'Initializing...',
-                'Loading Functions...',
-                'GED Ready...',
-                'TI-30XS Active'
-            ];
-
-            let index = 0;
-
-            const interval = setInterval(() => {
-
-                expressionDisplay.textContent = startupMessages[index];
-
-                index++;
-
-                if (index >= startupMessages.length) {
-
-                    clearInterval(interval);
-
-                    setTimeout(() => {
-
-                        expressionDisplay.textContent = '0';
-
-                    }, 500);
-                }
-
-            }, 600);
-        }
-
-        window.onload = function() {
-
-            bootAnimation();
-        }
-
-        function randomGlowEffect() {
-
-            const glow = document.querySelector('.glow');
-
-            setInterval(() => {
-
-                const x = Math.random() * 60;
-                const y = Math.random() * 60;
-
-                glow.style.left = `${x}%`;
-                glow.style.top = `${y}%`;
-
-            }, 4000);
-        }
-
-        randomGlowEffect();
-
-        function addRippleEffect(event) {
-
-            const button = event.currentTarget;
-
-            const circle = document.createElement('span');
-
-            const diameter = Math.max(button.clientWidth, button.clientHeight);
-
-            const radius = diameter / 2;
-
-            circle.style.width = circle.style.height = `${diameter}px`;
-
-            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
-
-            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
-
-            circle.style.position = 'absolute';
-            circle.style.borderRadius = '50%';
-            circle.style.background = 'rgba(255,255,255,0.3)';
-            circle.style.transform = 'scale(0)';
-            circle.style.animation = 'ripple 0.6s linear';
-            circle.style.pointerEvents = 'none';
-
-            const ripple = button.getElementsByClassName('ripple')[0];
-
-            if (ripple) {
-                ripple.remove();
-            }
-
-            circle.classList.add('ripple');
-
-            button.appendChild(circle);
-        }
-
-        buttons.forEach(button => {
-
-            button.addEventListener('click', addRippleEffect);
-        });
-
-        const style = document.createElement('style');
-
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-
-        document.head.appendChild(style);
-
-        function themePulse() {
-
-            const wrapper = document.querySelector('.calculator-wrapper');
-
-            let active = false;
-
-            setInterval(() => {
-
-                if (active) {
-
-                    wrapper.style.boxShadow = '0 20px 60px rgba(0,0,0,0.45)';
-
-                    active = false;
-
-                } else {
-
-                    wrapper.style.boxShadow = '0 20px 80px rgba(59,130,246,0.35)';
-
-                    active = true;
-                }
-
-            }, 3000);
-        }
-
-        themePulse();
-
-        function autoDemo() {
-
-            const demoSequence = [
-                '12+5',
-                'Math.sqrt(144)',
-                'Math.sin(45)',
-                'Math.PI*2'
-            ];
-
-            let demoIndex = 0;
-
-            setInterval(() => {
-
-                if (expression.length === 0) {
-
-                    expression = demoSequence[demoIndex];
-
-                    updateDisplay();
-
-                    try {
-
-                        resultDisplay.textContent = eval(expression);
-
-                    } catch {
-
-                        resultDisplay.textContent = '0';
-                    }
-
-                    setTimeout(() => {
-
-                        clearDisplay();
-
-                    }, 2500);
-
-                    demoIndex++;
-
-                    if (demoIndex >= demoSequence.length) {
-
-                        demoIndex = 0;
-                    }
-                }
-
-            }, 9000);
-        }
-
-        autoDemo();
-
-        function particleBackground() {
-
-            const totalParticles = 20;
-
-            for (let i = 0; i < totalParticles; i++) {
-
-                const particle = document.createElement('div');
-
-                particle.style.position = 'fixed';
-                particle.style.width = '6px';
-                particle.style.height = '6px';
-                particle.style.borderRadius = '50%';
-                particle.style.background = 'rgba(255,255,255,0.15)';
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = Math.random() * 100 + 'vh';
-                particle.style.zIndex = '1';
-                particle.style.pointerEvents = 'none';
-                particle.style.animation = `float ${4 + Math.random() * 8}s linear infinite`;
-
-                document.body.appendChild(particle);
-            }
-        }
-
-        const floatStyle = document.createElement('style');
-
-        floatStyle.textContent = `
-            @keyframes float {
-                0% {
-                    transform: translateY(0px);
-                    opacity: 0;
-                }
-                50% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(-100px);
-                    opacity: 0;
-                }
-            }
-        `;
-
-        document.head.appendChild(floatStyle);
-
-        particleBackground();
-
-    </script>
+<button class="btn dark-btn" onclick="clearDisplay()">
+<div class="top-label">clear var</div>
+<div class="main-label">x</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('4')">
+<div class="main-label">4</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('5')">
+<div class="main-label">5</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('6')">
+<div class="main-label">6</div>
+</button>
+
+<button class="btn operator-btn" onclick="appendValue('+')">
+<div class="main-label">+</div>
+</button>
+
+<button class="btn dark-btn" onclick="appendValue('sto')">
+<div class="top-label">recall</div>
+<div class="main-label">sto→</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('1')">
+<div class="main-label">1</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('2')">
+<div class="main-label">2</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('3')">
+<div class="main-label">3</div>
+</button>
+
+<button class="btn white-btn" onclick="backspace()">
+<div class="main-label">◀▶</div>
+</button>
+
+<button class="btn dark-btn" onclick="powerToggle()">
+<div class="top-label">off</div>
+<div class="main-label">on</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('0')">
+<div class="top-label">reset</div>
+<div class="main-label">0</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('.')">
+<div class="main-label">.</div>
+</button>
+
+<button class="btn white-btn" onclick="appendValue('-')">
+<div class="top-label">ans</div>
+<div class="main-label">(-)</div>
+</button>
+
+<button class="btn white-btn enter-btn" onclick="calculateResult()">
+<div class="main-label">enter</div>
+</button>
+
+</div>
+
+<div class="footer-note">
+TI‑30XS MultiView GED Scientific Calculator • Fully Mobile Responsive • Modern UI Clone
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let expression='';
+let powered=true;
+
+const display=document.getElementById('display');
+const result=document.getElementById('result');
+
+function appendValue(value){
+if(!powered)return;
+
+if(display.innerText==='MEMORY CLEARED'){
+display.innerText='';
+}
+
+expression+=value;
+display.innerText=expression || '0';
+}
+
+function clearDisplay(){
+if(!powered)return;
+expression='';
+display.innerText='0';
+result.innerText='0';
+}
+
+function backspace(){
+if(!powered)return;
+expression=expression.slice(0,-1);
+display.innerText=expression || '0';
+}
+
+function calculateResult(){
+if(!powered)return;
+
+try{
+const calc=eval(expression);
+result.innerText=calc;
+}
+catch{
+result.innerText='ERROR';
+}
+}
+
+function powerToggle(){
+powered=!powered;
+
+if(powered){
+display.innerText='READY';
+result.innerText='0';
+}
+else{
+display.innerText='';
+result.innerText='';
+}
+}
+
+document.addEventListener('keydown',e=>{
+if(!powered)return;
+
+if(!isNaN(e.key)||['+','-','*','/','.','(',')'].includes(e.key)){
+appendValue(e.key);
+}
+
+if(e.key==='Enter'){
+calculateResult();
+}
+
+if(e.key==='Backspace'){
+backspace();
+}
+});
+
+setTimeout(()=>{
+display.innerText='READY';
+},2500);
+
+</script>
 
 </body>
 </html>
