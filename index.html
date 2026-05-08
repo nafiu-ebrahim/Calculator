@@ -179,13 +179,28 @@ height:68px;
 border-radius:40px;
 background:#2f3641;
 border:2px solid #6d7580;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+grid-template-rows:repeat(3,1fr);
+padding:6px;
+gap:2px;
+}
+
+.arrow-key{
 display:flex;
 align-items:center;
 justify-content:center;
 color:white;
-font-size:24px;
-letter-spacing:6px;
+font-size:18px;
+font-weight:700;
+border-radius:10px;
+background:#3b4450;
 }
+
+.arrow-up{grid-column:2;grid-row:1;}
+.arrow-left{grid-column:1;grid-row:2;}
+.arrow-right{grid-column:3;grid-row:2;}
+.arrow-down{grid-column:2;grid-row:3;}
 
 .footer-note{
 margin-top:14px;
@@ -259,7 +274,7 @@ MADE BY NAFIU
 
 <div class="keypad">
 
-<button class="btn green-btn" onclick="appendValue('2nd')">
+<button class="btn green-btn" onclick="secondFunction()">
 <div class="main-label">2nd</div>
 </button>
 
@@ -274,7 +289,10 @@ MADE BY NAFIU
 </button>
 
 <div class="arrow-pad">
-◀ ▲ ▼ ▶
+<div class="arrow-key arrow-up">▲</div>
+<div class="arrow-key arrow-left">◀</div>
+<div class="arrow-key arrow-right">▶</div>
+<div class="arrow-key arrow-down">▼</div>
 </div>
 
 <button class="btn dark-btn" onclick="appendValue('log(')">
@@ -287,12 +305,12 @@ MADE BY NAFIU
 <div class="main-label">prb</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('data')">
+<button class="btn dark-btn" onclick="showMessage('DATA')">
 <div class="top-label">stat</div>
 <div class="main-label">data</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('table')">
+<button class="btn dark-btn" onclick="showMessage('TABLE')">
 <div class="top-label">f↔d</div>
 <div class="main-label">table</div>
 </button>
@@ -391,7 +409,7 @@ MADE BY NAFIU
 <div class="main-label">+</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('sto')">
+<button class="btn dark-btn" onclick="storeAnswer()">
 <div class="top-label">recall</div>
 <div class="main-label">sto→</div>
 </button>
@@ -453,6 +471,7 @@ const rad = document.querySelector('.rad');
 let input = '';
 let angleMode = 'RAD';
 let isOn = true;
+let storedAnswer = 0;
 
 function renderDisplay(){
     display.innerText = input || '0';
@@ -470,17 +489,13 @@ function appendValue(val){
 }
 
 function clearDisplay(){
-    if(!isOn) return;
-
     input = '';
     display.innerText = '0';
     result.innerText = '0';
 }
 
 function backspace(){
-    if(!isOn) return;
-
-    input = input.substring(0, input.length - 1);
+    input = input.slice(0,-1);
     renderDisplay();
 }
 
@@ -489,68 +504,62 @@ function toggleAngle(){
     rad.innerText = angleMode;
 }
 
+function secondFunction(){
+    showMessage('2ND');
+}
+
+function showMessage(text){
+    display.innerText = text;
+
+    setTimeout(()=>{
+        renderDisplay();
+    },700);
+}
+
+function storeAnswer(){
+    storedAnswer = result.innerText;
+    showMessage('STORED');
+}
+
 function powerToggle(){
     isOn = !isOn;
 
     if(isOn){
         display.innerText = 'READY';
         result.innerText = '0';
-    }else{
+    } else {
         display.innerText = '';
         result.innerText = '';
     }
 }
 
 function prepareExpression(exp){
+    exp = exp.replace(/÷/g,'/');
+    exp = exp.replace(/×/g,'*');
+    exp = exp.replace(/π/g,'Math.PI');
+    exp = exp.replace(/\^/g,'**');
 
-    exp = exp.replace(/÷/g, '/');
-    exp = exp.replace(/×/g, '*');
-    exp = exp.replace(/π/g, 'Math.PI');
-    exp = exp.replace(/\^/g, '**');
-
-    exp = exp.replace(/sqrt\(/g, 'Math.sqrt(');
-    exp = exp.replace(/log\(/g, 'Math.log10(');
-    exp = exp.replace(/ln\(/g, 'Math.log(');
+    exp = exp.replace(/sqrt\(/g,'Math.sqrt(');
+    exp = exp.replace(/log\(/g,'Math.log10(');
+    exp = exp.replace(/ln\(/g,'Math.log(');
 
     if(angleMode === 'DEG'){
-        exp = exp.replace(/sin\(([^()]*)\)/g, 'Math.sin(($1)*Math.PI/180)');
-        exp = exp.replace(/cos\(([^()]*)\)/g, 'Math.cos(($1)*Math.PI/180)');
-        exp = exp.replace(/tan\(([^()]*)\)/g, 'Math.tan(($1)*Math.PI/180)');
-    }else{
-        exp = exp.replace(/sin\(([^()]*)\)/g, 'Math.sin($1)');
-        exp = exp.replace(/cos\(([^()]*)\)/g, 'Math.cos($1)');
-        exp = exp.replace(/tan\(([^()]*)\)/g, 'Math.tan($1)');
+        exp = exp.replace(/sin\((.*?)\)/g,(m,v)=>`Math.sin((${v})*Math.PI/180)`);
+        exp = exp.replace(/cos\((.*?)\)/g,(m,v)=>`Math.cos((${v})*Math.PI/180)`);
+        exp = exp.replace(/tan\((.*?)\)/g,(m,v)=>`Math.tan((${v})*Math.PI/180)`);
+    } else {
+        exp = exp.replace(/sin\((.*?)\)/g,(m,v)=>`Math.sin(${v})`);
+        exp = exp.replace(/cos\((.*?)\)/g,(m,v)=>`Math.cos(${v})`);
+        exp = exp.replace(/tan\((.*?)\)/g,(m,v)=>`Math.tan(${v})`);
     }
 
     return exp;
 }
 
 function calculateResult(){
-    if(!isOn) return;
-
     try{
-        let exp = input;
-
-        exp = exp.replace(/÷/g,'/');
-        exp = exp.replace(/×/g,'*');
-        exp = exp.replace(/π/g,'Math.PI');
-        exp = exp.replace(/\^/g,'**');
-
-        exp = exp.replace(/sqrt\(/g,'Math.sqrt(');
-        exp = exp.replace(/log\(/g,'Math.log10(');
-        exp = exp.replace(/ln\(/g,'Math.log(');
-
-        if(angleMode === 'DEG'){
-            exp = exp.replace(/sin\((.*?)\)/g,(m,v)=>`Math.sin((${v})*Math.PI/180)`);
-            exp = exp.replace(/cos\((.*?)\)/g,(m,v)=>`Math.cos((${v})*Math.PI/180)`);
-            exp = exp.replace(/tan\((.*?)\)/g,(m,v)=>`Math.tan((${v})*Math.PI/180)`);
-        } else {
-            exp = exp.replace(/sin\((.*?)\)/g,(m,v)=>`Math.sin(${v})`);
-            exp = exp.replace(/cos\((.*?)\)/g,(m,v)=>`Math.cos(${v})`);
-            exp = exp.replace(/tan\((.*?)\)/g,(m,v)=>`Math.tan(${v})`);
-        }
-
-        const answer = Function('return ' + exp)();
+        const expression = prepareExpression(input);
+        const answer = Function('return ' + expression)();
 
         if(isNaN(answer) || !isFinite(answer)){
             result.innerText = 'ERROR';
@@ -560,59 +569,13 @@ function calculateResult(){
         result.innerText = parseFloat(answer.toFixed(10));
     }
     catch(err){
-        console.log(err);
         result.innerText = 'ERROR';
     }
 }
 
-const buttons = document.querySelectorAll('.btn');
-
-buttons.forEach(btn=>{
-    btn.addEventListener('touchstart',()=>{
-        btn.style.transform = 'scale(0.95)';
-    },{passive:true});
-
-    btn.addEventListener('touchend',()=>{
-        btn.style.transform = 'scale(1)';
-    },{passive:true});
-
-    btn.addEventListener('mousedown',()=>{
-        btn.style.transform = 'scale(0.95)';
-    });
-
-    btn.addEventListener('mouseup',()=>{
-        btn.style.transform = 'scale(1)';
-    });
-});
-
-document.addEventListener('keydown', function(e){
-
-    if(!isOn) return;
-
-    if(/[0-9]/.test(e.key)){
-        appendValue(e.key);
-    }
-
-    if(['+','-','*','/','.','(',')'].includes(e.key)){
-        appendValue(e.key);
-    }
-
-    if(e.key === 'Enter'){
-        calculateResult();
-    }
-
-    if(e.key === 'Backspace'){
-        backspace();
-    }
-
-    if(e.key === 'Escape'){
-        clearDisplay();
-    }
-});
-
 setTimeout(()=>{
     display.innerText = 'READY';
-}, 600);
+},500);
 </script>
 
 </body>
