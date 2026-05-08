@@ -277,7 +277,7 @@ MADE BY NAFIU
 ◀ ▲ ▼ ▶
 </div>
 
-<button class="btn dark-btn" onclick="appendValue('Math.log10(')">
+<button class="btn dark-btn" onclick="appendValue('log(')">
 <div class="top-label">10ˣ</div>
 <div class="main-label">log</div>
 </button>
@@ -301,22 +301,22 @@ MADE BY NAFIU
 <div class="main-label">clear</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('Math.PI')">
+<button class="btn dark-btn" onclick="appendValue('π')">
 <div class="top-label">hyp</div>
 <div class="main-label">π</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('Math.sin(')">
+<button class="btn dark-btn" onclick="appendValue('sin(')">
 <div class="top-label">sin⁻¹</div>
 <div class="main-label">sin</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('Math.cos(')">
+<button class="btn dark-btn" onclick="appendValue('cos(')">
 <div class="top-label">cos⁻¹</div>
 <div class="main-label">cos</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('Math.tan(')">
+<button class="btn dark-btn" onclick="appendValue('tan(')">
 <div class="top-label">tan⁻¹</div>
 <div class="main-label">tan</div>
 </button>
@@ -349,7 +349,7 @@ MADE BY NAFIU
 <div class="main-label">×</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('Math.sqrt(')">
+<button class="btn dark-btn" onclick="appendValue('sqrt(')">
 <div class="top-label">√</div>
 <div class="main-label">x²</div>
 </button>
@@ -470,6 +470,7 @@ render();
 }
 
 function clearDisplay(){
+if(!powered)return;
 expression='';
 render();
 result.textContent='0';
@@ -482,28 +483,37 @@ render();
 }
 
 function toggleAngle(){
+if(!powered)return;
 angleMode=angleMode==='RAD'?'DEG':'RAD';
 rad.textContent=angleMode;
+}
+
+function formatExpression(exp){
+exp=exp.replace(/÷/g,'/');
+exp=exp.replace(/×/g,'*');
+exp=exp.replace(/π/g,'Math.PI');
+exp=exp.replace(/sqrt\(/g,'Math.sqrt(');
+exp=exp.replace(/log\(/g,'Math.log10(');
+
+if(angleMode==='DEG'){
+exp=exp.replace(/sin\(([^()]*)\)/g,'Math.sin(($1)*Math.PI/180)');
+exp=exp.replace(/cos\(([^()]*)\)/g,'Math.cos(($1)*Math.PI/180)');
+exp=exp.replace(/tan\(([^()]*)\)/g,'Math.tan(($1)*Math.PI/180)');
+}else{
+exp=exp.replace(/sin\(([^()]*)\)/g,'Math.sin($1)');
+exp=exp.replace(/cos\(([^()]*)\)/g,'Math.cos($1)');
+exp=exp.replace(/tan\(([^()]*)\)/g,'Math.tan($1)');
+}
+
+return exp;
 }
 
 function calculateResult(){
 if(!powered)return;
 
 try{
-let exp=expression;
-
-exp=exp.replace(/÷/g,'/');
-exp=exp.replace(/×/g,'*');
-exp=exp.replace(/π/g,'Math.PI');
-exp=exp.replace(/\^/g,'**');
-
-if(angleMode==='DEG'){
-exp=exp.replace(/Math\.sin\(([^()]*)\)/g,'Math.sin(($1)*Math.PI/180)');
-exp=exp.replace(/Math\.cos\(([^()]*)\)/g,'Math.cos(($1)*Math.PI/180)');
-exp=exp.replace(/Math\.tan\(([^()]*)\)/g,'Math.tan(($1)*Math.PI/180)');
-}
-
-const answer=eval(exp);
+const formatted=formatExpression(expression);
+const answer=eval(formatted);
 
 if(isNaN(answer)||!isFinite(answer)){
 result.textContent='ERROR';
@@ -512,7 +522,7 @@ return;
 
 result.textContent=parseFloat(answer.toFixed(10));
 }
-catch(e){
+catch(error){
 result.textContent='ERROR';
 }
 }
@@ -542,9 +552,21 @@ if(e.key==='Backspace') backspace();
 if(e.key==='Escape') clearDisplay();
 });
 
+const buttons=document.querySelectorAll('.btn');
+
+buttons.forEach(btn=>{
+btn.addEventListener('touchstart',()=>{
+btn.style.transform='scale(.93)';
+},{passive:true});
+
+btn.addEventListener('touchend',()=>{
+btn.style.transform='scale(1)';
+},{passive:true});
+});
+
 setTimeout(()=>{
 display.textContent='READY';
-},1200);
+},1000);
 </script>
 
 </body>
