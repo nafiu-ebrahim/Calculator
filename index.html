@@ -10,73 +10,49 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
 font-family:'Inter',sans-serif;
 }
 
 body{
-background:#06080f;
+background:#0a0d14;
 min-height:100vh;
 display:flex;
-align-items:center;
 justify-content:center;
-padding:20px;
+align-items:center;
+padding:12px;
 overflow-x:hidden;
-}
-
-.bg-glow{
-position:fixed;
-width:500px;
-height:500px;
-background:rgba(59,130,246,0.18);
-filter:blur(120px);
-border-radius:50%;
-left:-150px;
-top:-150px;
-}
-
-.bg-glow2{
-position:fixed;
-width:450px;
-height:450px;
-background:rgba(168,85,247,0.18);
-filter:blur(120px);
-border-radius:50%;
-right:-120px;
-bottom:-120px;
 }
 
 .phone-wrapper{
 width:100%;
-max-width:430px;
-position:relative;
-z-index:10;
+max-width:420px;
 }
 
 .made-by{
 text-align:center;
-margin-bottom:14px;
+margin-bottom:12px;
+padding:12px;
+background:linear-gradient(90deg,#2563eb,#7c3aed);
 color:white;
 font-size:13px;
 font-weight:800;
 letter-spacing:4px;
-padding:12px 20px;
 border-radius:999px;
-background:linear-gradient(90deg,#2563eb,#7c3aed);
-box-shadow:0 10px 30px rgba(59,130,246,0.35);
 }
 
 .calculator-shell{
-background:#4b555e;
-border-radius:34px;
-padding:18px;
-box-shadow:0 25px 80px rgba(0,0,0,0.6);
-border:3px solid #69727b;
+background:#4d5862;
+padding:14px;
+border-radius:32px;
+border:2px solid #6d7883;
+box-shadow:0 25px 60px rgba(0,0,0,.6);
 }
 
 .top-brand{
 display:flex;
 justify-content:flex-end;
-padding:10px 10px 14px;
+padding:6px 6px 14px;
 }
 
 .brand-text{
@@ -85,183 +61,151 @@ color:white;
 }
 
 .brand-text h1{
-font-size:48px;
+font-size:44px;
 font-weight:800;
-line-height:0.9;
+line-height:1;
 }
 
 .brand-text h2{
-font-size:20px;
+font-size:18px;
 font-style:italic;
 font-weight:400;
-letter-spacing:4px;
+letter-spacing:3px;
 }
 
 .screen{
-background:#ececec;
-height:170px;
-border-radius:2px;
-padding:20px;
-margin-bottom:18px;
+background:#efefef;
+height:155px;
+border-radius:4px;
+padding:16px;
 position:relative;
+margin-bottom:14px;
 overflow:hidden;
-box-shadow:inset 0 0 10px rgba(0,0,0,0.2);
 }
 
 .rad{
 position:absolute;
-right:15px;
+right:14px;
 top:10px;
-font-size:18px;
+font-size:14px;
 font-weight:700;
-color:#111;
+font-family:monospace;
 }
 
 .display-text{
-font-size:42px;
-font-weight:500;
-color:#111;
-margin-top:40px;
-word-break:break-all;
+font-size:28px;
 font-family:monospace;
+margin-top:34px;
+color:#111;
+word-break:break-all;
 }
 
 .result{
 position:absolute;
-bottom:18px;
-right:18px;
-font-size:26px;
+right:14px;
+bottom:12px;
+font-size:24px;
+font-family:monospace;
 font-weight:700;
 color:#111;
-font-family:monospace;
 }
 
 .keypad{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:10px;
+gap:8px;
 }
 
 .btn{
-height:72px;
+height:68px;
 border:none;
 border-radius:14px;
-font-size:18px;
-font-weight:700;
 position:relative;
+font-weight:700;
+transition:transform .06s ease;
 cursor:pointer;
-transition:transform .08s ease, filter .15s ease, box-shadow .15s ease;
-overflow:hidden;
-will-change:transform;
+user-select:none;
 }
 
 .btn:active{
-transform:scale(0.92);
-filter:brightness(0.92);
+transform:scale(.94);
 }
 
 .dark-btn{
-background:#2f3641;
+background:#313945;
+border:2px solid #6d7580;
 color:white;
-border:3px solid #5f6872;
 }
 
 .white-btn{
 background:#ececec;
+border:2px solid #d7d7d7;
 color:#333;
-border:3px solid #d5d5d5;
 }
 
 .green-btn{
-background:#a6c56a;
-color:#2f3641;
-border:3px solid #c8e48d;
+background:#a8c96a;
+border:2px solid #cce493;
+color:#2e3640;
 }
 
 .operator-btn{
-background:#2d3340;
+background:#2b313c;
+border:2px solid #656d79;
 color:white;
-border:3px solid #59616d;
 }
 
 .top-label{
 position:absolute;
-top:6px;
+top:7px;
 left:0;
 right:0;
-font-size:12px;
+font-size:11px;
+color:#dff17c;
 font-weight:800;
-color:#d9f57b;
 }
 
 .main-label{
 position:absolute;
-bottom:12px;
 left:0;
 right:0;
+bottom:11px;
 font-size:17px;
-}
-
-.enter-btn{
-grid-column:span 1;
-height:72px;
 }
 
 .arrow-pad{
 grid-column:span 2;
-height:72px;
+height:68px;
 border-radius:40px;
 background:#2f3641;
-border:3px solid #5f6872;
+border:2px solid #6d7580;
 display:flex;
 align-items:center;
 justify-content:center;
-gap:22px;
 color:white;
-font-size:26px;
+font-size:24px;
+letter-spacing:6px;
 }
 
 .footer-note{
+margin-top:14px;
 text-align:center;
-margin-top:18px;
-color:#94a3b8;
-font-size:13px;
-line-height:1.6;
+font-size:12px;
+color:#cbd5e1;
 }
 
 @media(max-width:480px){
-body{
-padding:10px;
-}
-
-.calculator-shell{
-padding:12px;
-border-radius:26px;
-}
-
 .brand-text h1{
-font-size:38px;
+font-size:34px;
 }
 
 .brand-text h2{
-font-size:16px;
-}
-
-.screen{
-height:145px;
-}
-
-.display-text{
-font-size:28px;
-margin-top:35px;
-}
-
-.result{
-font-size:20px;
+font-size:15px;
 }
 
 .btn{
-height:62px;
+height:60px;
+border-radius:12px;
 }
 
 .main-label{
@@ -269,7 +213,20 @@ font-size:14px;
 }
 
 .top-label{
-font-size:10px;
+font-size:9px;
+}
+
+.arrow-pad{
+height:60px;
+font-size:20px;
+}
+
+.display-text{
+font-size:22px;
+}
+
+.result{
+font-size:20px;
 }
 }
 </style>
@@ -489,86 +446,74 @@ TI‑30XS MultiView GED Scientific Calculator • Fully Mobile Responsive • Mo
 </div>
 
 <script>
-
 let expression='';
 let powered=true;
 let angleMode='RAD';
 
 const display=document.getElementById('display');
 const result=document.getElementById('result');
-const radIndicator=document.querySelector('.rad');
+const rad=document.querySelector('.rad');
 
-function updateScreen(){
-if(expression===''){
-display.innerText='0';
-}else{
-display.innerText=expression;
-}
+function render(){
+display.textContent=expression || '0';
 }
 
 function appendValue(value){
 if(!powered)return;
 
-if(display.innerText==='MEMORY CLEARED'||display.innerText==='READY'){
+if(display.textContent==='MEMORY CLEARED'||display.textContent==='READY'){
 expression='';
-}
-
-const blocked=['2nd','mode','delete','angle','data','table','sto'];
-
-if(blocked.includes(value)){
-return;
 }
 
 expression+=value;
-updateScreen();
+render();
 }
 
 function clearDisplay(){
-if(!powered)return;
 expression='';
-updateScreen();
-result.innerText='0';
+render();
+result.textContent='0';
 }
 
 function backspace(){
 if(!powered)return;
 expression=expression.slice(0,-1);
-updateScreen();
+render();
 }
 
-function scientificParser(exp){
-let parsed=exp;
-
-parsed=parsed.replace(/π/g,'Math.PI');
-parsed=parsed.replace(/÷/g,'/');
-parsed=parsed.replace(/×/g,'*');
-parsed=parsed.replace(/\^/g,'**');
-
-if(angleMode==='DEG'){
-parsed=parsed.replace(/Math\.sin\(([^)]+)\)/g,'Math.sin(($1)*Math.PI/180)');
-parsed=parsed.replace(/Math\.cos\(([^)]+)\)/g,'Math.cos(($1)*Math.PI/180)');
-parsed=parsed.replace(/Math\.tan\(([^)]+)\)/g,'Math.tan(($1)*Math.PI/180)');
-}
-
-return parsed;
+function toggleAngle(){
+angleMode=angleMode==='RAD'?'DEG':'RAD';
+rad.textContent=angleMode;
 }
 
 function calculateResult(){
 if(!powered)return;
 
 try{
-const parsed=scientificParser(expression);
-const calc=eval(parsed);
+let exp=expression;
 
-if(calc===Infinity||isNaN(calc)){
-result.innerText='ERROR';
+exp=exp.replace(/÷/g,'/');
+exp=exp.replace(/×/g,'*');
+exp=exp.replace(/π/g,'Math.PI');
+exp=exp.replace(/\^/g,'**');
+
+if(angleMode==='DEG'){
+exp=exp.replace(/Math\.sin\(([^()]*)\)/g,'Math.sin(($1)*Math.PI/180)');
+exp=exp.replace(/Math\.cos\(([^()]*)\)/g,'Math.cos(($1)*Math.PI/180)');
+exp=exp.replace(/Math\.tan\(([^()]*)\)/g,'Math.tan(($1)*Math.PI/180)');
+}
+
+const answer=eval(exp);
+
+if(isNaN(answer)||!isFinite(answer)){
+result.textContent='ERROR';
 return;
 }
 
-result.innerText=parseFloat(calc.toFixed(10));
+result.textContent=parseFloat(answer.toFixed(10));
 }
-catch(error){
-result.innerText='ERROR';
+catch(e){
+result.textContent='ERROR';
 }
 }
 
@@ -576,65 +521,30 @@ function powerToggle(){
 powered=!powered;
 
 if(powered){
-display.innerText='READY';
-result.innerText='0';
+display.textContent='READY';
+result.textContent='0';
+}else{
+display.textContent='';
+result.textContent='';
 }
-else{
-display.innerText='';
-result.innerText='';
 }
-}
-
-function toggleAngle(){
-angleMode=angleMode==='RAD'?'DEG':'RAD';
-radIndicator.innerText=angleMode;
-}
-
-const allButtons=document.querySelectorAll('.btn');
-
-allButtons.forEach(btn=>{
-btn.addEventListener('touchstart',()=>{
-btn.style.transform='scale(0.92)';
-},{passive:true});
-
-btn.addEventListener('touchend',()=>{
-btn.style.transform='scale(1)';
-},{passive:true});
-
-btn.addEventListener('mousedown',()=>{
-btn.style.transform='scale(0.92)';
-});
-
-btn.addEventListener('mouseup',()=>{
-btn.style.transform='scale(1)';
-});
-});
 
 document.addEventListener('keydown',e=>{
 if(!powered)return;
 
-if(!isNaN(e.key)||['+','-','*','/','.','(',')','%'].includes(e.key)){
+if(/[0-9+\-*/().]/.test(e.key)){
 expression+=e.key;
-updateScreen();
+render();
 }
 
-if(e.key==='Enter'){
-calculateResult();
-}
-
-if(e.key==='Backspace'){
-backspace();
-}
-
-if(e.key==='Escape'){
-clearDisplay();
-}
+if(e.key==='Enter') calculateResult();
+if(e.key==='Backspace') backspace();
+if(e.key==='Escape') clearDisplay();
 });
 
 setTimeout(()=>{
-display.innerText='READY';
-},1500);
-
+display.textContent='READY';
+},1200);
 </script>
 
 </body>
