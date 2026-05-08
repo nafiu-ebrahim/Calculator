@@ -150,12 +150,14 @@ font-size:18px;
 font-weight:700;
 position:relative;
 cursor:pointer;
-transition:0.18s ease;
+transition:transform .08s ease, filter .15s ease, box-shadow .15s ease;
 overflow:hidden;
+will-change:transform;
 }
 
 .btn:active{
-transform:scale(0.94);
+transform:scale(0.92);
+filter:brightness(0.92);
 }
 
 .dark-btn{
@@ -323,7 +325,7 @@ MADE BY NAFIU
 <div class="main-label">log</div>
 </button>
 
-<button class="btn dark-btn" onclick="appendValue('angle')">
+<button class="btn dark-btn" onclick="toggleAngle()">
 <div class="top-label">angle</div>
 <div class="main-label">prb</div>
 </button>
@@ -490,42 +492,82 @@ TI‑30XS MultiView GED Scientific Calculator • Fully Mobile Responsive • Mo
 
 let expression='';
 let powered=true;
+let angleMode='RAD';
 
 const display=document.getElementById('display');
 const result=document.getElementById('result');
+const radIndicator=document.querySelector('.rad');
+
+function updateScreen(){
+if(expression===''){
+display.innerText='0';
+}else{
+display.innerText=expression;
+}
+}
 
 function appendValue(value){
 if(!powered)return;
 
-if(display.innerText==='MEMORY CLEARED'){
-display.innerText='';
+if(display.innerText==='MEMORY CLEARED'||display.innerText==='READY'){
+expression='';
+}
+
+const blocked=['2nd','mode','delete','angle','data','table','sto'];
+
+if(blocked.includes(value)){
+return;
 }
 
 expression+=value;
-display.innerText=expression || '0';
+updateScreen();
 }
 
 function clearDisplay(){
 if(!powered)return;
 expression='';
-display.innerText='0';
+updateScreen();
 result.innerText='0';
 }
 
 function backspace(){
 if(!powered)return;
 expression=expression.slice(0,-1);
-display.innerText=expression || '0';
+updateScreen();
+}
+
+function scientificParser(exp){
+let parsed=exp;
+
+parsed=parsed.replace(/π/g,'Math.PI');
+parsed=parsed.replace(/÷/g,'/');
+parsed=parsed.replace(/×/g,'*');
+parsed=parsed.replace(/\^/g,'**');
+
+if(angleMode==='DEG'){
+parsed=parsed.replace(/Math\.sin\(([^)]+)\)/g,'Math.sin(($1)*Math.PI/180)');
+parsed=parsed.replace(/Math\.cos\(([^)]+)\)/g,'Math.cos(($1)*Math.PI/180)');
+parsed=parsed.replace(/Math\.tan\(([^)]+)\)/g,'Math.tan(($1)*Math.PI/180)');
+}
+
+return parsed;
 }
 
 function calculateResult(){
 if(!powered)return;
 
 try{
-const calc=eval(expression);
-result.innerText=calc;
+const parsed=scientificParser(expression);
+const calc=eval(parsed);
+
+if(calc===Infinity||isNaN(calc)){
+result.innerText='ERROR';
+return;
 }
-catch{
+
+result.innerText=parseFloat(calc.toFixed(10));
+}
+catch(error){
 result.innerText='ERROR';
 }
 }
@@ -543,11 +585,37 @@ result.innerText='';
 }
 }
 
+function toggleAngle(){
+angleMode=angleMode==='RAD'?'DEG':'RAD';
+radIndicator.innerText=angleMode;
+}
+
+const allButtons=document.querySelectorAll('.btn');
+
+allButtons.forEach(btn=>{
+btn.addEventListener('touchstart',()=>{
+btn.style.transform='scale(0.92)';
+},{passive:true});
+
+btn.addEventListener('touchend',()=>{
+btn.style.transform='scale(1)';
+},{passive:true});
+
+btn.addEventListener('mousedown',()=>{
+btn.style.transform='scale(0.92)';
+});
+
+btn.addEventListener('mouseup',()=>{
+btn.style.transform='scale(1)';
+});
+});
+
 document.addEventListener('keydown',e=>{
 if(!powered)return;
 
-if(!isNaN(e.key)||['+','-','*','/','.','(',')'].includes(e.key)){
-appendValue(e.key);
+if(!isNaN(e.key)||['+','-','*','/','.','(',')','%'].includes(e.key)){
+expression+=e.key;
+updateScreen();
 }
 
 if(e.key==='Enter'){
@@ -557,11 +625,15 @@ calculateResult();
 if(e.key==='Backspace'){
 backspace();
 }
+
+if(e.key==='Escape'){
+clearDisplay();
+}
 });
 
 setTimeout(()=>{
 display.innerText='READY';
-},2500);
+},1500);
 
 </script>
 
